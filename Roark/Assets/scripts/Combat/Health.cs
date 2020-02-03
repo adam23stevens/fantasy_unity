@@ -25,7 +25,7 @@ namespace Roark.Combat
 
         private void Die()
         {
-            print("dead");
+            GetComponent<Animator>().SetTrigger("OnDeath");
             IsDead = true;
         }
     }

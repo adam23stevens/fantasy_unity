@@ -32,10 +32,11 @@ namespace Roark.Combat
             {
                 if (_combatTarget.GetComponent<Health>().IsDead) return;
 
-                var targetPosition = _combatTarget.GetComponent<Transform>();
-                GetComponent<Mover>().MoveTo(targetPosition.position);
-
-                if (GetIsInRange(targetPosition.position))
+                var targetPosition = _combatTarget.GetComponent<Transform>().position;
+                transform.LookAt(targetPosition);
+                GetComponent<Mover>().MoveTo(targetPosition);
+                
+                if (GetIsInRange(targetPosition))
                 {
                     GetComponent<Mover>().Cancel();
 

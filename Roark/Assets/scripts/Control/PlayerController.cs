@@ -49,6 +49,9 @@ namespace Roark.Control
             {
                 if (hit.transform.GetComponent<CombatTarget>() != null)
                 {
+                    var health = hit.transform.GetComponent<Health>();
+                    if (health == null || health.IsDead) continue;
+
                     if (Input.GetMouseButtonDown(0))
                     {
                         CombatTarget combatTarget = hit.transform.GetComponent<CombatTarget>();

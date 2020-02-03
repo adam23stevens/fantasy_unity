@@ -295,6 +295,7 @@
 /define:CSHARP_7_3_OR_NEWER
 "Assets/scripts/Combat/CombatTarget.cs"
 "Assets/scripts/Combat/Fighter.cs"
+"Assets/scripts/Combat/Health.cs"
 "Assets/scripts/Control/PlayerController.cs"
 "Assets/scripts/Core/IAction.cs"
 "Assets/scripts/Core/ISelectable.cs"

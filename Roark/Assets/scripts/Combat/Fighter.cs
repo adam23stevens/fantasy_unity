@@ -10,27 +10,54 @@ namespace Roark.Combat
         [SerializeField]
         public int Range;
 
+        [SerializeField] public float TimeBetweenPunches;
+
         private CombatTarget _combatTarget;
+
+        private float _punchTimer;
 
         public string Name { get; set; }
 
         void Start()
         {
             Name = "Fighter";
+            _punchTimer = 0;
         }
 
         void Update()
         {
+            _punchTimer += Time.deltaTime;
+
             if (_combatTarget != null)
             {
+                if (_combatTarget.GetComponent<Health>().IsDead) return;
+
                 var targetPosition = _combatTarget.GetComponent<Transform>();
                 GetComponent<Mover>().MoveTo(targetPosition.position);
 
                 if (GetIsInRange(targetPosition.position))
                 {
                     GetComponent<Mover>().Cancel();
+
+                    if (_punchTimer > TimeBetweenPunches)
+                    {
+                        DoPunch();
+                        _punchTimer = 0;
+                    }
                 }
             }
+        }
+
+        private void DoPunch()
+        {
+            var animator = GetComponent<Animator>();
+           
+            animator.SetTrigger("OnPunch");
+        }
+
+        private void InflictDamage(float damage)
+        {
+            _combatTarget.GetComponent<Health>().TakeDamage(damage);
         }
 
         private bool GetIsInRange(Vector3 targetPosition)
@@ -49,6 +76,12 @@ namespace Roark.Combat
         public void Cancel()
         {
             _combatTarget = null;
+        }
+
+        //Animation Event
+        void Hit()
+        {
+            InflictDamage(15f);
         }
     }
 }

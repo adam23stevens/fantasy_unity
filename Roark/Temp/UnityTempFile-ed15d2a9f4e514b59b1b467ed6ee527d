@@ -1,11 +1,12 @@
 /target:library
 /nowarn:0169
-/out:"Temp/Assembly-CSharp.dll"
+/out:"Temp/Assembly-CSharp-Editor.dll"
 /debug:portable
 /optimize-
 /nostdlib+
 /preferreduilang:en-US
 /langversion:latest
+/reference:"Library/ScriptAssemblies/Assembly-CSharp.dll"
 /reference:"/Applications/Unity/Hub/Editor/2019.2.14f1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.dll"
 /reference:"/Applications/Unity/Hub/Editor/2019.2.14f1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.AIModule.dll"
 /reference:"/Applications/Unity/Hub/Editor/2019.2.14f1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.ARModule.dll"
@@ -67,6 +68,8 @@
 /reference:"/Applications/Unity/Hub/Editor/2019.2.14f1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.WindModule.dll"
 /reference:"/Applications/Unity/Hub/Editor/2019.2.14f1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.XRModule.dll"
 /reference:"/Applications/Unity/Hub/Editor/2019.2.14f1/Unity.app/Contents/Managed/UnityEditor.dll"
+/reference:"Library/ScriptAssemblies/UnityEditor.TestRunner.dll"
+/reference:"Library/ScriptAssemblies/UnityEngine.TestRunner.dll"
 /reference:"Library/ScriptAssemblies/Unity.Timeline.Editor.dll"
 /reference:"Library/ScriptAssemblies/Unity.VSCode.Editor.dll"
 /reference:"Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll"
@@ -76,6 +79,14 @@
 /reference:"Library/ScriptAssemblies/Unity.Rider.Editor.dll"
 /reference:"Library/ScriptAssemblies/Unity.TextMeshPro.dll"
 /reference:"Library/ScriptAssemblies/UnityEditor.UI.dll"
+/reference:"/Applications/Unity/Hub/Editor/2019.2.14f1/Unity.app/Contents/UnityExtensions/Unity/UnityVR/Editor/UnityEditor.VR.dll"
+/reference:"/Applications/Unity/Hub/Editor/2019.2.14f1/Unity.app/Contents/Managed/UnityEditor.Graphs.dll"
+/reference:"/Applications/Unity/Hub/Editor/2019.2.14f1/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll"
+/reference:"/Applications/Unity/Hub/Editor/2019.2.14f1/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll"
+/reference:"/Applications/Unity/Hub/Editor/2019.2.14f1/Unity.app/Contents/PlaybackEngines/MacStandaloneSupport/UnityEditor.OSXStandalone.Extensions.dll"
+/reference:"/Applications/Unity/Hub/Editor/2019.2.14f1/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.dll"
+/reference:"/Applications/Visual Studio.app/Contents/Resources/lib/monodevelop/AddIns/MonoDevelop.Unity/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll"
+/reference:"/Users/adamstevens/Documents/dev/roark/unity/Roark/Library/PackageCache/com.unity.ext.nunit@1.0.0/net35/unity-custom/nunit.framework.dll"
 /reference:"/Applications/Unity/Hub/Editor/2019.2.14f1/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Xcode.dll"
 /reference:"/Applications/Unity/Hub/Editor/2019.2.14f1/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Common.dll"
 /reference:"/Applications/Unity/Hub/Editor/2019.2.14f1/Unity.app/Contents/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll"
@@ -271,7 +282,7 @@
 /define:ENABLE_SPATIALTRACKING
 /define:ENABLE_WEBSOCKET_HOST
 /define:ENABLE_MONO
-/define:NET_STANDARD_2_0
+/define:NET_4_6
 /define:ENABLE_PROFILER
 /define:DEBUG
 /define:TRACE
@@ -293,15 +304,5 @@
 /define:ENABLE_LEGACY_INPUT_MANAGER
 /define:CSHARP_7_OR_LATER
 /define:CSHARP_7_3_OR_NEWER
-"Assets/scripts/Combat/CombatTarget.cs"
-"Assets/scripts/Combat/Fighter.cs"
-"Assets/scripts/Control/PlayerController.cs"
-"Assets/scripts/Core/IAction.cs"
-"Assets/scripts/Core/ISelectable.cs"
-"Assets/scripts/Core/MouseCamera.cs"
-"Assets/scripts/Core/PlayerCamera.cs"
-"Assets/scripts/Core/Scheduler.cs"
-"Assets/scripts/Movement/Mover.cs"
-"Assets/scripts/RTS_Camera/Demo/DemoScene.cs"
-"Assets/scripts/RTS_Camera/Demo/TargetSelector.cs"
-"Assets/scripts/RTS_Camera/Scripts/RTS_Camera.cs"
+"Assets/scripts/RTS_Camera/Scripts/Editor/LayoutHelpers.cs"
+"Assets/scripts/RTS_Camera/Scripts/Editor/RTS_CameraEditor.cs"

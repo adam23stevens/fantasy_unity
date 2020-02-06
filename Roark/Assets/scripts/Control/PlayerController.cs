@@ -55,7 +55,7 @@ namespace Roark.Control
                     if (Input.GetMouseButtonDown(0))
                     {
                         CombatTarget combatTarget = hit.transform.GetComponent<CombatTarget>();
-                        GetComponent<Fighter>().Fight(combatTarget);
+                        GetComponent<Fighter>().Fight(combatTarget.gameObject);
                     }
                     return true;
                 }

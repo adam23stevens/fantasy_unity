@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Roark.Combat
 {
@@ -26,6 +27,7 @@ namespace Roark.Combat
         private void Die()
         {
             GetComponent<Animator>().SetTrigger("OnDeath");
+            GetComponent<NavMeshAgent>().enabled = false;
             IsDead = true;
         }
     }

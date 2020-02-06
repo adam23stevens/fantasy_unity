@@ -12,7 +12,7 @@ namespace Roark.Combat
 
         [SerializeField] public float TimeBetweenPunches;
 
-        private CombatTarget _combatTarget;
+        private GameObject _combatTarget;
 
         private float _punchTimer;
 
@@ -67,7 +67,7 @@ namespace Roark.Combat
             return isInScope;
         }
 
-        public void Fight(CombatTarget target)
+        public void Fight(GameObject target)
         {
             GetComponent<Scheduler>().StartAction(this);
 

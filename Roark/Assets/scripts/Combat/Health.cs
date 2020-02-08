@@ -28,6 +28,7 @@ namespace Roark.Combat
         {
             GetComponent<Animator>().SetTrigger("OnDeath");
             GetComponent<NavMeshAgent>().enabled = false;
+
             IsDead = true;
         }
     }

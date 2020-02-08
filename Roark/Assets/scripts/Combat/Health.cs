@@ -15,7 +15,7 @@ namespace Roark.Combat
             if (IsDead) return;
 
             TotalHealth = Mathf.Max(TotalHealth - damageAmt, 0);
-            print(TotalHealth);
+            
 
             if (TotalHealth <= 0)
             {

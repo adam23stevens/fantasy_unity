@@ -18,7 +18,7 @@ namespace Roark.Combat
 
         private float _punchTimer;
 
-        const float AngleForBackAttack = 120f;
+        const float AngleForBackAttack = 100f;
 
         public string Name { get; set; }
 
@@ -63,14 +63,15 @@ namespace Roark.Combat
         private bool IsBackAttack()
         {
             Vector3 dirToTarget = (transform.position - _combatTarget.transform.position).normalized;
-            float angleBetweenGuardAndPlayer = Vector3.Angle(transform.forward, dirToTarget);
-
+            float angleBetweenGuardAndPlayer = Vector3.Angle(_combatTarget.transform.forward, dirToTarget);
+                      
             return angleBetweenGuardAndPlayer > AngleForBackAttack;
         }
 
-        private void InflictDamage(float damage)
+        private void InflictDamage()
         {
-            damage *= IsBackAttack() ?  3 : 1;
+            var damage = IsBackAttack() ? DamageToInflict * 3 : DamageToInflict;
+            print(damage);
             _combatTarget.GetComponent<Health>().TakeDamage(damage);
         }
 
@@ -95,7 +96,7 @@ namespace Roark.Combat
         //Animation Event
         void Hit()
         {
-            InflictDamage(DamageToInflict);
+            InflictDamage();
         }
     }
 }

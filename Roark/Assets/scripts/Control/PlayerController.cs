@@ -2,12 +2,21 @@ using UnityEngine;
 using Roark.Movement;
 using Roark.Combat;
 using Roark.Core;
+using UnityEngine.AI;
+using System;
 
 namespace Roark.Control
 {
     public class PlayerController : MonoBehaviour, ISelectable
     {
+        private float _navMeshAgentSpeed;
+
         bool _isSelected;
+
+        void Start()
+        {
+            _navMeshAgentSpeed = GetComponent<NavMeshAgent>().speed;
+        }
 
         void Update()
         {
@@ -19,8 +28,10 @@ namespace Roark.Control
             else
             {
                 if (DoSelect()) return;
+                
                 if (DoCombat()) return;
                 DoMovement();
+                
             }
 
         }
@@ -60,7 +71,6 @@ namespace Roark.Control
                     return true;
                 }
             }
-
             return false;
         }
 
@@ -73,10 +83,16 @@ namespace Roark.Control
             {
                 if (Input.GetMouseButtonDown(0))
                 {
+                    SetMovementSpeed();
                     GetComponent<Mover>().StartMoveAction(hit.point);
                 }
             }
             return hasHit;
+        }
+
+        private void SetMovementSpeed()
+        {
+            GetComponent<NavMeshAgent>().speed = Input.GetKey(KeyCode.S) ? 5.662f : _navMeshAgentSpeed;
         }
 
         private static Ray GetCameraRay()

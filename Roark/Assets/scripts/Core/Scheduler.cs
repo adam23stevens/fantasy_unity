@@ -6,27 +6,27 @@ namespace Roark.Core
     public class Scheduler : MonoBehaviour
     {
 
-        IAction _currentAction;
-        ISelectable _currentSelected;
+        public IAction CurrentAction;
+        public ISelectable CurrentSelected;
         
         public void StartAction(IAction action)
         {
-            if (_currentAction != null)
+            if (CurrentAction != null)
             {
-                _currentAction.Cancel();
+                CurrentAction.Cancel();
             }
-            _currentAction = action;
+            CurrentAction = action;
         }
 
         public void StartSelected(ISelectable selectable)
         {
-            if (_currentSelected != null)
+            if (CurrentSelected != null)
             {
-                _currentSelected.Cancel();
+                CurrentSelected.Cancel();
             }
-            _currentSelected = selectable;
+            CurrentSelected = selectable;
 
-            _currentSelected.Select();
+            CurrentSelected.Select();
         }
 
     }

@@ -11,11 +11,14 @@ namespace Roark.Control
 {
     public class AIController : MonoBehaviour
     {
-
         [SerializeField]
         public float VisionRange;
         [SerializeField]
         public float VisionAngle;
+        [SerializeField]
+        public float HearingRange;
+        //[SerializeField]
+        //public float ChaseLength;
         [SerializeField]
         public float SuspiciionTime;
         [SerializeField]
@@ -26,19 +29,21 @@ namespace Roark.Control
         public float AttackSpeed;
         [SerializeField]
         public LayerMask ViewMask;
+        [SerializeField]
+        public Transform FollowPoint;
 
         private bool _spottedPlayer;
-        private UnityEngine.Vector3 _startPosition;
+        private Vector3 _startPosition;
         private Quaternion _rotatePosition;
-        private bool _isPatrolling;
         private bool _isSuspicious;
         private float _timeSinceSawLastPlayer;
         private float _timeDwellingAtPatrolPoint;
         private bool _hasAttackedPlayer;
+        //private float _chaseTime;
         private GameObject _player;
         private Health _health;
-        private Collider _spotCollider;
-        private int _patrolPointIndex;
+        private int _currentPatrolPointIndex;
+        private int _nextPatrolPointIndex;
         private bool _patrolBackwards;
         private float _patrolSpeed;
         private Mover _mover;
@@ -50,7 +55,6 @@ namespace Roark.Control
         {
             _spottedPlayer = false;
             _isSuspicious = false;
-            _isPatrolling = true;
             _timeSinceSawLastPlayer = Mathf.Infinity;
             _startPosition = transform.position;
             _rotatePosition = transform.rotation;
@@ -61,23 +65,23 @@ namespace Roark.Control
             _fighter = GetComponent<Fighter>();
             _navMeshAgent = GetComponent<NavMeshAgent>();
             _patrolSpeed = _navMeshAgent.speed;
-            _patrolBackwards = false; 
-            GetSpotCollider();
-            _patrolPointIndex = 0;
+            _patrolBackwards = false;
+            _currentPatrolPointIndex = 0;
             _timeDwellingAtPatrolPoint = 0f;
+            //_chaseTime = 0f;
         }
 
         // Update is called once per frame
         void Update()
         {
-         
+
             if (_health.IsDead) return;
 
             PatrolBehaviour();
 
             LookoutForPlayer();
 
-            if (_spottedPlayer)
+            if (_spottedPlayer || CanHearPlayer())
             {
                 AttackBehaviour();
             }
@@ -94,17 +98,20 @@ namespace Roark.Control
         {
             _timeSinceSawLastPlayer += Time.deltaTime;
             _timeDwellingAtPatrolPoint += Time.deltaTime;
+            //_chaseTime += Time.deltaTime;
         }
 
         private void SuspicionBehavior()
         {
-            _mover.StartMoveAction(transform.position);
+            _mover.StartMoveAction(_player.transform.position);
 
             if (_timeSinceSawLastPlayer > SuspiciionTime)
             {
                 _isSuspicious = false;
                 _hasAttackedPlayer = false;
+                _navMeshAgent.speed = _patrolSpeed;
             }
+
         }
 
         private void AttackBehaviour()
@@ -118,52 +125,55 @@ namespace Roark.Control
         {
             if (PatrolLine != null)
             {
-                if (_patrolPointIndex >= PatrolLine.transform.childCount)
+                if (_currentPatrolPointIndex == PatrolLine.transform.childCount - 1)
                 {
                     if (PatrolLine.IsLoopPatrol)
                     {
-                        _patrolPointIndex = 0;
+                        _nextPatrolPointIndex = 0;
                     }
                     else
                     {
                         _patrolBackwards = true;
-                        _patrolPointIndex--;
+                        _nextPatrolPointIndex = _currentPatrolPointIndex - 1;
                     }
                 }
-                else if (_patrolPointIndex == 0 && _patrolBackwards)
+                else if (_currentPatrolPointIndex == 0 && _patrolBackwards)
                 {
                     _patrolBackwards = false;
+                    _nextPatrolPointIndex = _currentPatrolPointIndex + 1;
                 }
-                
-                var targetPoint = PatrolLine.transform.GetChild(_patrolPointIndex);
-
-                if (targetPoint != null)
+                else
                 {
-                    _mover.MoveTo(targetPoint.transform.position);
-                    _navMeshAgent.speed = _patrolSpeed;
+                    _nextPatrolPointIndex = _currentPatrolPointIndex + (_patrolBackwards ? -1 : 1);
+                }
 
-                    if (Vector3.Distance(transform.position, targetPoint.transform.position) < 1f)
+                
+                var currentPoint = PatrolLine.transform.GetChild(_currentPatrolPointIndex);
+
+                if (currentPoint != null)
+                {                                        
+                    if (Vector3.Distance(transform.position, currentPoint.transform.position) < 1f)
                     {
-                        _timeDwellingAtPatrolPoint = 0f;
-                        DwellAtPatrolPoint();
-                        
-                        if (_patrolBackwards)
-                        {
-                            _patrolPointIndex = (_patrolPointIndex == 0)
-                                ? 1 :
-                                _patrolPointIndex - 1;
-                        }
-                        else
-                        {
-                            _patrolPointIndex++;
-                        }
+                        _timeDwellingAtPatrolPoint = 0;
+
+                        _currentPatrolPointIndex = _nextPatrolPointIndex;
+                    }
+
+                    if (_timeDwellingAtPatrolPoint > PatrolPointDwellTime)
+                    {
+                        _mover.StartMoveAction(currentPoint.transform.position);
                     }
                 }
-            } else
+            }
+            else if (FollowPoint != null)
+            {
+                _mover.StartMoveAction(FollowPoint.transform.position);
+            }
+            else
             {
                 if (!_spottedPlayer && !_isSuspicious)
                 {
-                    _mover.MoveTo(_startPosition);
+                    _mover.StartMoveAction(_startPosition);
                     if (Vector3.Distance(transform.position, _startPosition) < 0.2f)
                     {
                         transform.rotation = _rotatePosition;
@@ -172,22 +182,15 @@ namespace Roark.Control
             }
         }
 
-        private void DwellAtPatrolPoint()
-        {
-            if (_timeDwellingAtPatrolPoint < PatrolPointDwellTime)
-            {
-                _mover.MoveTo(transform.position);
-            }
-        }
-
         private void LookoutForPlayer()
         {
             _spottedPlayer = CanSpotPlayer();
-         
+            print(_spottedPlayer);
             if (_spottedPlayer)
             {
                 _timeSinceSawLastPlayer = 0f;
-            } 
+                //_chaseTime = 0f;
+            }
         }
 
         private bool CanSpotPlayer()
@@ -198,7 +201,7 @@ namespace Roark.Control
             {
                 Vector3 dirToPlayer = (_player.transform.position - transform.position).normalized;
                 float angleBetweenGuardAndPlayer = Vector3.Angle(transform.forward, dirToPlayer);
-                
+                print(angleBetweenGuardAndPlayer);
                 if (angleBetweenGuardAndPlayer < VisionAngle)
                 {
                     if (!Physics.Linecast(transform.position, _player.transform.position, ViewMask))
@@ -207,29 +210,29 @@ namespace Roark.Control
                     }
                 }
             }
-        
+
 
             return false;
         }
 
-        private void GetSpotCollider()
+        private bool CanHearPlayer()
         {
-            for (int i = 0; i < transform.childCount; i++)
-            {
-                var child = transform.GetChild(i);
-                var collider = child.GetComponent<BoxCollider>();
-                if (collider.isTrigger)
-                {
-                    _spotCollider = collider;
-                }
-            }
+            var isInRange = Vector3.Distance(transform.position, _player.transform.position) < HearingRange;
 
+            if (isInRange)
+            {
+                var playerNavMeshAgent = _player.GetComponent<NavMeshAgent>();
+                return (playerNavMeshAgent.velocity.x > 0f || playerNavMeshAgent.velocity.z > 0f) && Input.GetKey(KeyCode.S) ;
+            }
+            return false;
         }
 
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.green;
             Gizmos.DrawWireSphere(transform.position, VisionRange);
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(transform.position, HearingRange);
         }
     }
 }

@@ -9,6 +9,7 @@ namespace Roark.Combat
     {
         [SerializeField]
         public int Range;
+        
 
         [SerializeField] public float TimeBetweenPunches;
 
@@ -71,7 +72,7 @@ namespace Roark.Combat
         private void InflictDamage()
         {
             var damage = IsBackAttack() ? DamageToInflict * 3 : DamageToInflict;
-            print(damage);
+
             _combatTarget.GetComponent<Health>().TakeDamage(damage);
         }
 
@@ -90,13 +91,13 @@ namespace Roark.Combat
 
         public void Cancel()
         {
-            _combatTarget = null;
+           _combatTarget = null;
         }
 
         //Animation Event
         void Hit()
         {
-            InflictDamage();
+           InflictDamage();
         }
     }
 }
